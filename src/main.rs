@@ -1,78 +1,77 @@
-use std::{env, fs, io::Read, sync::mpsc, thread};
+mod watch;
 
-use markdown_viewer::watch;
+use std::{env, fs, path::PathBuf, thread};
+
+use comrak::ComrakOptions;
 use notify::{Op, RawEvent};
+use watch::watch;
+use web_view::Content;
 
 fn main() {
-    let path = env::args().nth(1).expect("Arg 1 mst be a path");
+    let path = env::args().nth(1).expect("arg 1 must be a valid path");
+    let path = PathBuf::from(path);
 
-    // if let Err(e) = watch(path) {
-    //     println!("error: {:?}", e);
-    // }
+    if !path.exists() {
+        panic!("file does not exist");
+    }
 
-    // let (tx, rx) = mpsc::channel();
+    let html = update_html(&path);
 
-    // if let Err(e) = watch(tx, path) {
-    //     println!("error: {:?}", e);
-    // }
+    let wv = web_view::builder()
+        .title("Markdown Viewer")
+        .content(Content::Html(html))
+        .size(800, 600)
+        .resizable(true)
+        .debug(true)
+        .user_data(())
+        .invoke_handler(|_webview, _arg| Ok(()))
+        .build()
+        .unwrap();
 
-    // let msg = rx.recv().unwrap();
-    // println!("{:#?}", msg);
+    let handle = wv.handle();
 
-    // match watch(tx, path) {
-    //     // Ok(path) => loop {
-    //     //     match rx.recv() {
-    //     //         // Ok(RawEvent {
-    //     //         //     op: Ok(Op::WRITE),
-    //     //         //     path: Some(file_written),
-    //     //         //     ..
-    //     //         // }) if file_written == path => {
-    //     //         //     println!("wrote file!");
-    //     //         // },
-    //     //         Ok(ev) => println!("{:#?}", ev),
-    //     //         Err(e) => panic!("{:#?}", e),
-    //     //     }
-    //     // },
-    //     Ok(path) => println!("{:#?}", rx.recv()),
-    //     Err(e) => println!("error watching file: {:?}", e),
-    // }
+    thread::spawn(move || {
+        watch(path, |path, data| match data {
+            Ok(RawEvent {
+                op: Ok(Op::WRITE),
+                path: Some(file_written),
+                ..
+            }) if file_written == path => {
+                handle
+                    .dispatch(move |webview| {
+                        webview.set_html(&update_html(&path))
+                    })
+                    .unwrap();
+            },
 
-    // match watch(tx, path) {
-    //     Ok(_) => {
-    //         println!("does this even run");
-    // while let Ok(ev) = rx.try_recv() {
-    //     println!("{:#?}", ev);
-    // }
-    //     },
-    //     Err(e) => println!("error creating watcher: {:?}", e),
-    // }
+            Ok(_) => {},
 
-    // let (tx, rx) = mpsc::channel();
-    // watch(tx, path).unwrap();
+            Err(e) => panic!("error: {:?}", e),
+        })
+        .unwrap();
+    });
 
-    // let m = rx.recv().unwrap();
-    // println!("{:?}", m);
+    wv.run().unwrap();
+}
 
-    watch(path, |path, data| match data {
-        Ok(RawEvent {
-            op: Ok(Op::WRITE),
-            path: Some(file_written),
-            ..
-        }) if file_written == path => {
-            let contents =
-                fs::read_to_string(&file_written).expect("unable to read file");
+fn update_html(path: &PathBuf) -> String {
+    let contents = fs::read_to_string(path).expect("unable to read file");
 
-            let mut ops = comrak::ComrakOptions::default();
-            ops.render.escape = true;
+    format!(
+        include_str!("../static/index.html"),
+        md = render_markdown(&contents),
+        styles = include_str!("../static/style.css"),
+    )
+}
 
-            let html = comrak::markdown_to_html(&contents, &ops);
+fn render_markdown(md: &str) -> String {
+    let mut ops = ComrakOptions::default();
+    ops.render.escape = true;
+    ops.extension.tasklist = true;
+    ops.extension.strikethrough = true;
+    ops.extension.table = true;
+    ops.extension.autolink = true;
+    ops.extension.tasklist = true;
 
-            println!("{}", html);
-        },
-
-        Ok(_) => {},
-
-        Err(e) => println!("error: {:?}", e),
-    })
-    .unwrap();
+    comrak::markdown_to_html(md, &ops)
 }
