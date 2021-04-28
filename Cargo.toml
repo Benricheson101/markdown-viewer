@@ -8,7 +8,7 @@ edition = "2018"
 
 [dependencies]
 comrak = "0.10"
-crossbeam-channel = "0.5"
+nfd = "0.0.4"
 notify = "4.0"
 strfmt = "0.1.6"
 web-view = "0.7"

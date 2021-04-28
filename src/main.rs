@@ -3,17 +3,29 @@ mod watch;
 use std::{env, fs, path::PathBuf, thread};
 
 use comrak::ComrakOptions;
+use nfd::Response;
 use notify::{Op, RawEvent};
 use watch::watch;
 use web_view::Content;
 
 fn main() {
-    let path = env::args().nth(1).expect("arg 1 must be a valid path");
-    let path = PathBuf::from(path);
+    let path = if let Some(path) = env::args().nth(1) {
+        let path = PathBuf::from(path);
 
-    if !path.exists() {
-        panic!("file does not exist");
-    }
+        if !path.exists() {
+            panic!("file does not exist");
+        }
+
+        path
+    } else {
+        if let Response::Okay(path) =
+            nfd::open_file_dialog(Some("md"), Some(".")).unwrap()
+        {
+            path.into()
+        } else {
+            panic!("unknown file")
+        }
+    };
 
     let html = update_html(&path);
 
@@ -22,11 +34,16 @@ fn main() {
         .content(Content::Html(html))
         .size(800, 600)
         .resizable(true)
-        .debug(true)
         .user_data(())
-        .invoke_handler(|_webview, _arg| Ok(()))
-        .build()
-        .unwrap();
+        .invoke_handler(|_webview, _arg| Ok(()));
+
+    let wv = if cfg!(debug_assertions) {
+        wv.debug(true)
+    } else {
+        wv
+    };
+
+    let wv = wv.build().unwrap();
 
     let handle = wv.handle();
 
