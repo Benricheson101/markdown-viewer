@@ -14,4 +14,4 @@ A simple cross-platform markdown viewer
 
 ---
 
-<img src="https://github.com/Benricheson101/markdown-viewer/blob/main/meta/demo.gif?raw=true" width=500>
+![demo](https://github.com/Benricheson101/markdown-viewer/blob/main/meta/demo.gif?raw=true)
