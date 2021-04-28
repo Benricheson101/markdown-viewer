@@ -3,14 +3,14 @@
   <head>
     <!-- highlightjs -->
     <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.7.2/build/highlight.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/styles/github.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/styles/github-gist.min.css">
     <script>hljs.highlightAll();</script>
 
-    <!-- doing it this way so css is baked into the binary and doesnt have to be distributed separately -->
+    <!-- for some reason, web-view doesnt like doing it the traditional way but this works ig -->
     <style>{styles}</style>
   </head>
 
 <body>
-  <div id="rendered-md">{md}</div>
+  <div class="md">{md}</div>
 </body>
 </html>

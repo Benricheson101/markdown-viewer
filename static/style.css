@@ -1,25 +1,122 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Sans&family=Open+Sans&display=swap');
+@import url('https://cdn.jsdelivr.net/npm/dejavu-sans@1.0.0/css/dejavu-sans.min.css');
+
+.md {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 16px;
+}
+
+.md>:first-child {
+  margin-top: 0 !important;
+}
+
+h1 {
+  font-size: 2em;
+}
+
+h2 {
+  font-size: 1.5em;
+}
+
+h3 {
+  font-size: 1.25em;
+}
+
+h1, h2 {
+  padding-bottom: .3em;
+  border-bottom: 1px solid #eaecef;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 24px;
+  margin-bottom: 16px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
 blockquote {
-  border-left: 5px solid #ccc;
-  margin: 1.5em 5px;
-  padding: 0.5em 5px;
+  padding: 0 1em;
+  color: #6a737d;
+  border-left: .25em solid #dfe2e5;
+  margin: 0;
 }
 
-blockquote:before {
-  color: #ccc;
-  font-size: 4em;
-  line-height: 0.1em;
-  margin-right: 0.25em;
-  vertical-align: -0.4em;
+blockquote, ol, p, pre, table, ul {
+  margin-top: 0;
+  margin-bottom: 16px;
 }
 
-blockquote p {
-  display: inline;
+hr {
+  height: .25em;
+  padding: 0;
+  margin: 24px 0;
+  background-color: #e1e4e8;
+  border: 0;
 }
 
-table,
-th,
-td {
-  padding: 10px;
-  border: 1px solid black;
+code {
+  font-family: 'Deja Vu Sans Mono', monospace;
+}
+
+code:not(.hljs) {
+  padding: .2em .4em;
+  margin: 0;
+  font-size: 85%;
+  background-color: rgba(27, 31, 35, .05);
+  border-radius: 6px;
+}
+
+p {
+  display: block;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+}
+
+pre {
+  padding: 16px;
+  overflow: auto;
+  font-size: 85%;
+  line-height: 1.45;
+  background-color: #f6f8fa;
+  border-radius: 6px;
+
+  margin-bottom: 0;
+  word-break: normal;
+}
+
+.hljs {
+  background-color: initial;
+  padding: initial;
+  background: initial;
+  display: initial;
+}
+
+table {
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  overflow: auto;
+
+  border-spacing: 0;
   border-collapse: collapse;
+}
+
+table tr {
+  background-color: #fff;
+  border-top: 1px solid #c6cbd1;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f6f8fa;
+}
+
+table td, table th {
+  padding: 6px 13px;
+  border: 1px solid #dfe2e5;
+}
+
+ol, ul {
+  padding-left: 2em;
 }
