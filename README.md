@@ -12,7 +12,6 @@ A simple cross-platform markdown viewer
 ## Build from source
 `cargo build --release [--target=your-target]`
 
-<img
-  src="https://github.com/Benricheson101/markdown-viewer/blob/main/meta/demo.gif?raw=true"
-  width=500
->
+---
+
+<img src="https://github.com/Benricheson101/markdown-viewer/blob/main/meta/demo.gif?raw=true" width=500>
