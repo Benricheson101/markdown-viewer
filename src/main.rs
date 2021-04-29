@@ -8,6 +8,9 @@ use notify::{Op, RawEvent};
 use watch::watch;
 use web_view::Content;
 
+const HTML: &str = include_str!("../static/index.html");
+const STYLES: &str = include_str!("../static/style.css");
+
 fn main() {
     let path = if let Some(path) = env::args().nth(1) {
         let path = PathBuf::from(path);
@@ -74,10 +77,10 @@ fn main() {
 fn update_html(path: &PathBuf) -> String {
     let contents = fs::read_to_string(path).expect("unable to read file");
 
-    format!(
-        include_str!("../static/index.html"),
-        md = render_markdown(&contents),
-        styles = include_str!("../static/style.css"),
+    HTML.replacen("{styles}", STYLES, 1).replacen(
+        "{md}",
+        &render_markdown(&contents),
+        1,
     )
 }
 
